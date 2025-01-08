@@ -414,6 +414,34 @@ public class Biblioteca2025 {
     }
 
     private void modificarPrestamo() {
+        Scanner sc = new Scanner(System.in);
+            int pos;
+            
+            pos = encuentraPrestamo();
+            
+                System.out.println("Que quieres modificar?");
+            
+                int cierre = 0;
+                
+                do{
+                    System.out.println("1 - Fecha Devolucion");
+                    System.out.println("9 - Cancelar");
+                    cierre = sc.nextInt();
+                    sc.nextLine();
+
+
+                    switch(cierre){
+                        case 1:{
+                            LocalDate dev=prestamos.get(pos).getFechaDev();
+                            System.out.println("Cuantos dias quieres añadir al prestamo? ");
+                            int dias = sc.nextInt();
+                            prestamos.get(pos).setFechaDev(dev.plusDays(dias));
+                            System.out.println("Dias añadidos con exito");
+                            break;
+                        }
+                    }
+                }while(cierre !=9);
+            
         
     }
 
