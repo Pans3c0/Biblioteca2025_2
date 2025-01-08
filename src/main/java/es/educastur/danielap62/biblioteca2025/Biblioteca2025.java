@@ -33,8 +33,9 @@ public class Biblioteca2025 {
     }
 
     
-
+    
     //<editor-fold defaultstate="collapsed" desc="MENUS">
+    //Para crear estas carpetas utilizamos "fcom"
     public void menu(){
         int opcion = 0;
         Scanner sc = new Scanner(System.in);
@@ -207,7 +208,6 @@ public class Biblioteca2025 {
             Scanner sc= new Scanner(System.in);
             System.out.println("Que libro quieres elmininar?");
             int pos;
-            
             String Isbn = solicitaIsbn();
             pos = buscaIsbn(Isbn);
             if(pos==-1){
@@ -221,8 +221,54 @@ public class Biblioteca2025 {
         }
 
         private void modificarLibro() {
+            Scanner sc = new Scanner(System.in);
+            int pos;
+            do{
+            System.out.println("Introduce el Isbn del libro que quieras modificar");
+            String isbn = sc.nextLine();
+            pos = buscaIsbn(isbn);
+            if(pos == -1){
+                System.out.println("El Isbn introducide no existe. Aqui tienes una lista de los que si existen y su libro correspondiente:");
+                
+                for (int i = 0; i < libros.size(); i++) {
+                            System.out.println("- " + libros.get(i).getIsbn() + " " + libros.get(i).getTitulo());
+                    
+                        }
+
+                
+            }else{
+                System.out.println("Que quieres modificar?");
             
+                int cierre = 0;
+                
+                do{
+                    System.out.println("1 - Genero");
+                    System.out.println("2 - Ejemplares");
+                    System.out.println("9 - Cancelar");
+                    cierre = sc.nextInt();
+                    sc.nextLine();
+
+
+                    switch(cierre){
+                        case 1:{
+                            System.out.println("Genero nuevo: ");
+                            libros.get(pos).setGenero(sc.nextLine());
+                            System.out.println("Genero cambiado con exito");
+                            break;
+                        }
+
+                        case 2:{
+                            System.out.println("Cuantos ejemplares?");
+                            libros.get(pos).setEjemplares(sc.nextInt());
+                            System.out.println("Ejemplares cambiados con exito");
+                            break;
+                        }
+                    }
+                }while(cierre !=9);
+            }
+        }while(pos == -1);
         }
+        
 
         private void listaLibros() {
             for (Libro l: libros) {
@@ -267,8 +313,62 @@ public class Biblioteca2025 {
     
 
     private void modificarUsuario() {
-        
-    }
+        Scanner sc = new Scanner(System.in);
+            int pos;
+            do{
+            System.out.println("Introduce el DNI del usuario que quieras modificar");
+            String dni = sc.nextLine();
+            pos = buscaDni(dni);
+            if(pos == -1){
+                System.out.println("El DNI introducide no existe. Aqui tienes una lista de los que si existen y su usuario correspondiente:");
+                
+                for (int i = 0; i < usuarios.size(); i++) {
+                            System.out.println("- " + usuarios.get(i).getDni() + " " + usuarios.get(i).getNombre());
+                    
+                        }
+
+                
+            }else{
+                System.out.println("Que quieres modificar?");
+            
+                int cierre = 0;
+                
+                do{
+                    System.out.println("1 - Nombre");
+                    System.out.println("2 - Email");
+                    System.out.println("3 - Telefono");
+                    System.out.println("9 - Cancelar");
+                    cierre = sc.nextInt();
+                    sc.nextLine();
+
+
+                    switch(cierre){
+                        case 1:{
+                            System.out.println("Nombre nuevo: ");
+                            usuarios.get(pos).setNombre(sc.nextLine());
+                            System.out.println("Nombre cambiado con exito");
+                            break;
+                        }
+
+                        case 2:{
+                            System.out.println("Nuevo email: ");
+                            usuarios.get(pos).setEmail(sc.nextLine());
+                            System.out.println("Email cambiado con exito");
+                            break;
+                        }
+                        
+                        case 3:{
+                            System.out.println("Nuevo Telefono: ");
+                            usuarios.get(pos).setTelefono(sc.nextLine());
+                            System.out.println("Telefono cambiado con exito");
+                            break;
+                        }
+                    }
+                }while(cierre !=9);
+            }
+        }while(pos == -1);
+        }
+    
 
     private void listaUsuarios() {
         for (Usuario u: usuarios) {
