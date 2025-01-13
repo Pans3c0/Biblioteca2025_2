@@ -17,11 +17,14 @@ public class Biblioteca2025 {
     private ArrayList <Usuario> usuarios;
     
     private ArrayList <Prestamo> prestamos;
+    
+    private ArrayList <Prestamo> prestamosHist;
 
     public Biblioteca2025() {
         this.libros = new ArrayList();
         this.usuarios = new ArrayList();
-        this.prestamos = new ArrayList();    
+        this.prestamos = new ArrayList();
+        this.prestamosHist = new ArrayList();  
     }
     
     
@@ -155,7 +158,7 @@ public class Biblioteca2025 {
             System.out.println("");
             System.out.println("PRESTAMOS\n");
             System.out.println("1 - NUEVO PRESTAMO");
-            System.out.println("2 - ELIMINAR PRESTAMO");
+            System.out.println("2 - DEVOLVER PRESTAMO");
             System.out.println("3 - MODIFICAR PRESTAMO");
             System.out.println("4 - LISTA DE PRESTAMO");
             System.out.println("9 - Salir");
@@ -168,7 +171,7 @@ public class Biblioteca2025 {
                 }
 
                 case 2:{
-                    eliminarPrestamo();
+                    devolucion();
                     break;
                 }
 
@@ -271,8 +274,11 @@ public class Biblioteca2025 {
         
 
         private void listaLibros() {
-            for (Libro l: libros) {
-                System.out.println(l);
+            System.out.println("Lista de prestamos activos");
+            for (int i = 0; i < libros.size(); i++) {
+                if(libros.get(i).getEjemplares()>= 1){
+                    System.out.println("- " + libros.get(i));
+                }
                 
             }
         }
@@ -401,56 +407,51 @@ public class Biblioteca2025 {
         }
     }
 
-    private void eliminarPrestamo() {
-        Scanner sc = new Scanner(System.in);
-        
-        System.out.println("Encontremos el prestamo:");
-        int pos=encuentraPrestamo();
-        prestamos.remove(pos);
-        System.out.println("Prestamo eliminado con exito");
-        
-        
-        
+    private void devolucion() {
+        System.out.println("Datos para la prórroga del préstamo:");
+        String isbnLibro=solicitaIsbn();
+        int pos=encuentraPrestamo(solicitaDni(),isbnLibro);
+        if (pos==-1){
+            System.out.println("No hay ningún préstamo con esos datos");
+        }else{
+            prestamos.get(pos).setFechaDev(LocalDate.now());
+            libros.get(buscaIsbn(isbnLibro))
+              .setEjemplares(libros.get(buscaIsbn(isbnLibro)).getEjemplares()+1);
+            prestamosHist.add(prestamos.get(pos));
+            prestamos.remove(pos);
+        }
     }
 
     private void modificarPrestamo() {
-        Scanner sc = new Scanner(System.in);
             int pos;
+            String Isbn = solicitaIsbn();
+            buscaDni(Isbn);
             
-            pos = encuentraPrestamo();
+            String Dni = solicitaDni();
+            buscaDni(Dni);
             
-                System.out.println("Que quieres modificar?");
-            
-                int cierre = 0;
-                
-                do{
-                    System.out.println("1 - Fecha Devolucion");
-                    System.out.println("9 - Cancelar");
-                    cierre = sc.nextInt();
-                    sc.nextLine();
-
-
-                    switch(cierre){
-                        case 1:{
-                            LocalDate dev=prestamos.get(pos).getFechaDev();
-                            System.out.println("Cuantos dias quieres añadir al prestamo? ");
-                            int dias = sc.nextInt();
-                            prestamos.get(pos).setFechaDev(dev.plusDays(dias));
-                            System.out.println("Dias añadidos con exito");
-                            break;
-                        }
-                    }
-                }while(cierre !=9);
-            
-        
+            pos = encuentraPrestamo(Dni, Isbn);
+            if(pos==-1){
+                System.out.println("\nLos datos introducidos no eran correcots");
+            }else{
+                LocalDate dev=prestamos.get(pos).getFechaDev();
+                prestamos.get(pos).setFechaDev(dev.plusDays(15));
+                prestamos.get(pos).setFechaPrest(LocalDate.now());
+                System.out.println("Dias añadidos con exito");
+            }   
     }
 
     private void listaPrestamos() {
+        System.out.println("\nLista de prestamos activos:");
         for (Prestamo p: prestamos) {
             System.out.println(p);
             
         }
-        
+        System.out.println("\nLista de prestamos devueltos");
+        for (Prestamo p : prestamosHist) {
+            System.out.println(p);
+        }
+           
     }
     //</editor-fold>
     
@@ -481,6 +482,8 @@ public class Biblioteca2025 {
         prestamos.add(new Prestamo(libros.get(5),usuarios.get(0), hoy,hoy.plusDays(15)));
         prestamos.add(new Prestamo(libros.get(6),usuarios.get(2), hoy,hoy.plusDays(15)));
         prestamos.add(new Prestamo(libros.get(2),usuarios.get(1), hoy,hoy.plusDays(15)));
+        
+        prestamosHist.add(new Prestamo(libros.get(1), usuarios.get(3), hoy.minusDays(20),hoy.minusDays(10)));
     
         for (Libro l:libros) {
             System.out.println(l);
@@ -554,32 +557,27 @@ public class Biblioteca2025 {
         return isbn;
     }
     
-    
-    public int encuentraPrestamo(){
-        Scanner sc=new Scanner(System.in);
-        int pos = -1;
-        String user = solicitaDni();
-        if(buscaDni(user)==-1){
-            System.out.println("El Usuario introducido es incorrecto");
-        } else{
-            String Isbn = solicitaIsbn();
-            if(buscaIsbn(Isbn)==-1){
-                System.out.println("El Isbn introducido es incorrecto");
-            } else{
-                int posLibro=buscaIsbn(Isbn);
-                for (int i = 0; i<prestamos.size(); i++) {
-                        if(prestamos.get(i).getLibroPrest().getIsbn().equalsIgnoreCase(Isbn) && prestamos.get(i).getUsuarioPrest().getDni().equalsIgnoreCase(user) ){
-                            pos = i;
-                           libros.get(posLibro).setEjemplares(libros.get(posLibro).getEjemplares()+1);
-                            break;
-                        }
-
-                    }
+    /**
+     * Metodo que busca el Prestamo usando el Dni y el Isbn
+     * @return Devuelve la posicion del Prestamo, devuelve -1 si no lo encontro
+     */
+    /**
+     * Método para buscar un préstamo en la colección préstamos
+     * @param dni (String) del usuario que realizó el préstamo
+     * @param isbn (String) del libro prestado
+     * @return posición (int) del préstamo en el Arraylist, 
+     *         valor -1 si no se encuentra un préstamo con esos datos
+     */
+    public int encuentraPrestamo(String dni, String isbn){
+        int pos=-1;
+        for (int i = 0; i < prestamos.size(); i++) {
+            if (prestamos.get(i).getUsuarioPrest().getDni().equals(dni)
+                && prestamos.get(i).getLibroPrest().getIsbn().equals(isbn)){   
+                pos=i;
+                break;
             }
         }
-        
-        return pos;
-        
+        return pos;       
     }
     //</editor-fold>
 
