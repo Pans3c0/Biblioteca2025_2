@@ -160,7 +160,8 @@ public class Biblioteca2025 {
             System.out.println("1 - NUEVO PRESTAMO");
             System.out.println("2 - DEVOLVER PRESTAMO");
             System.out.println("3 - MODIFICAR PRESTAMO");
-            System.out.println("4 - LISTA DE PRESTAMO");
+            System.out.println("4 - LISTA DE PRESTAMOS");
+            System.out.println("45 - LISTA PREST. USUARIO EN ESPECIFICO");
             System.out.println("9 - Salir");
             opcion = sc.nextInt();
              
@@ -182,6 +183,11 @@ public class Biblioteca2025 {
 
                 case 4:{
                     listaPrestamos();
+                    break;
+                }
+                
+                case 5:{
+                    listaPrestamosUsu();
                     break;
                 }
             }
@@ -423,27 +429,33 @@ public class Biblioteca2025 {
     }
 
     private void modificarPrestamo() {
-            int pos;
-            String Isbn = solicitaIsbn();
-            buscaDni(Isbn);
+        Scanner sc= new Scanner (System.in);   
+        int pos;
+        String Isbn = solicitaIsbn();
+        buscaDni(Isbn);
             
-            String Dni = solicitaDni();
-            buscaDni(Dni);
+        String Dni = solicitaDni();
+        buscaDni(Dni);
             
-            pos = encuentraPrestamo(Dni, Isbn);
-            if(pos==-1){
-                System.out.println("\nLos datos introducidos no eran correcots");
-            }else{
-                LocalDate dev=prestamos.get(pos).getFechaDev();
-                prestamos.get(pos).setFechaDev(dev.plusDays(15));
-                prestamos.get(pos).setFechaPrest(LocalDate.now());
-                System.out.println("Dias añadidos con exito");
-            }   
+        pos = encuentraPrestamo(Dni, Isbn);
+        if(pos==-1){
+             System.out.println("\nLos datos introducidos no eran correcots");
+        }else{
+            LocalDate dev=prestamos.get(pos).getFechaDev();
+            System.out.println("Cuantos dias quieres añadir?");
+            int dias = sc.nextInt();
+            prestamos.get(pos).setFechaDev(dev.plusDays(dias));
+            prestamos.get(pos).setFechaPrest(LocalDate.now());
+            System.out.println("Has añadido " + dias + " con exito");
+        }   
     }
 
     private void listaPrestamos() {
         System.out.println("\nLista de prestamos activos:");
         for (Prestamo p: prestamos) {
+            if(p.getFechaPrest().isBefore(LocalDate.now())){
+                    System.out.print("Libro fuera de plazo:\t");
+                }
             System.out.println(p);
             
         }
@@ -453,6 +465,38 @@ public class Biblioteca2025 {
         }
            
     }
+    
+    
+    
+    private void listaPrestamosUsu() {
+        String dni = solicitaDni();
+        int pos=buscaDni(dni);
+        if(pos==-1){
+            System.out.println("Ese dni no corresponde a ningun usuario.");
+            
+        }
+        
+        else{
+            
+        System.out.println("Prestamos activos de: " + usuarios.get(pos).getNombre());
+        for (Prestamo p : prestamos) {
+            if(p.getUsuarioPrest().getDni().equals(dni)){
+                if(p.getFechaPrest().isBefore(LocalDate.now())){
+                    System.out.print("Libro fuera de plazo:\t");
+                }
+                System.out.println(p);
+            }
+        }
+        
+        System.out.println("Prestamos historicos de: " + usuarios.get(pos).getNombre());
+        for (Prestamo p : prestamosHist) {
+            if(p.getUsuarioPrest().getDni().equals(dni)){
+                System.out.println(p);
+            }
+        }
+        }
+        
+    }
     //</editor-fold>
     
     
@@ -460,12 +504,12 @@ public class Biblioteca2025 {
     public void cargaDatos(){
         libros.add(new Libro("1-11","El Hobbit","JRR Tolkien","Aventuras",3)); 
         libros.add(new Libro("1-22","El Silmarillon","JRR Tolkien","Aventuras",3)); 
-        libros.add(new Libro("1-33","El Médico","N. Gordon","Aventuras",4)); 
-        libros.add(new Libro("1-44","Chamán","N. Gordon","Aventuras",3)); 
+        libros.add(new Libro("1-33","El Medico","N. Gordon","Aventuras",4)); 
+        libros.add(new Libro("1-44","Chaman","N. Gordon","Aventuras",3)); 
         libros.add(new Libro("1-55","Momo","M. Ende","Aventuras",2)); 
-        libros.add(new Libro("1-66","Paraíso inhabitado","A.M.Matute","Aventuras",2)); 
-        libros.add(new Libro("1-77","Olvidado Rey Gudú","A.M.Matute","Aventuras",2)); 
-        libros.add(new Libro("1-88","El último barco","D.Villar","Novela Negra",3)); 
+        libros.add(new Libro("1-66","Paraiso inhabitado","A.M.Matute","Aventuras",2)); 
+        libros.add(new Libro("1-77","Olvidado Rey Gudu","A.M.Matute","Aventuras",2)); 
+        libros.add(new Libro("1-88","El ultimo barco","D.Villar","Novela Negra",3)); 
         libros.add(new Libro("1-99","Ojos de agua","D.Villar","Novela Negra",2)); 
 
         usuarios.add(new Usuario("11","Ana","ana@email.com","621111111")); 
@@ -476,7 +520,7 @@ public class Biblioteca2025 {
         usuarios.add(new Usuario("66","Juan","juan@email.com","626666666"));
         
         LocalDate hoy= LocalDate.now();
-        prestamos.add(new Prestamo(libros.get(2),usuarios.get(0), hoy,hoy.plusDays(15)));
+        prestamos.add(new Prestamo(libros.get(2),usuarios.get(0), hoy.minusDays(20),hoy.minusDays(5)));
         prestamos.add(new Prestamo(libros.get(8),usuarios.get(2), hoy,hoy.plusDays(15)));
         prestamos.add(new Prestamo(libros.get(5),usuarios.get(4), hoy,hoy.plusDays(15)));
         prestamos.add(new Prestamo(libros.get(5),usuarios.get(0), hoy,hoy.plusDays(15)));
