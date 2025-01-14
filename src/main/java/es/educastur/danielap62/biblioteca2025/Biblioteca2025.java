@@ -32,6 +32,7 @@ public class Biblioteca2025 {
     public static void main(String[] args) {
         Biblioteca2025 b= new Biblioteca2025();
         b.cargaDatos();
+        b.fueraPlazo();
         b.menu();
     }
 
@@ -161,7 +162,8 @@ public class Biblioteca2025 {
             System.out.println("2 - DEVOLVER PRESTAMO");
             System.out.println("3 - MODIFICAR PRESTAMO");
             System.out.println("4 - LISTA DE PRESTAMOS");
-            System.out.println("45 - LISTA PREST. USUARIO EN ESPECIFICO");
+            System.out.println("5 - LISTA PREST. USUARIO EN ESPECIFICO");
+            System.out.println("6 - LISTA PREST. LIBRO EN ESPECIFICO");
             System.out.println("9 - Salir");
             opcion = sc.nextInt();
              
@@ -189,6 +191,10 @@ public class Biblioteca2025 {
                 case 5:{
                     listaPrestamosUsu();
                     break;
+                }
+                
+                case 6: {
+                    listaPrestamosLibro();
                 }
             }
         }while(opcion != 9);
@@ -393,6 +399,9 @@ public class Biblioteca2025 {
     //<editor-fold defaultstate="collapsed" desc="Gestion Prestamos">
     
 
+    /**
+     * Metodo para crear un nuevo prestamo, no pide nada ya que el propio metodo llama a otros para pedirlo.
+     */
     private void nuevoPrestamo() {
         System.out.println("Identificacion del usuario:");
         int posUsuario=buscaDni(solicitaDni());
@@ -413,8 +422,11 @@ public class Biblioteca2025 {
         }
     }
 
+    /**
+     * Metodo para devolver un libro, añadiendo el prestamo a los historicos y quitandolo de los activos.
+     */
     private void devolucion() {
-        System.out.println("Datos para la prórroga del préstamo:");
+        System.out.println("Datos para la devolucion del préstamo:");
         String isbnLibro=solicitaIsbn();
         int pos=encuentraPrestamo(solicitaDni(),isbnLibro);
         if (pos==-1){
@@ -428,6 +440,9 @@ public class Biblioteca2025 {
         }
     }
 
+    /**
+     * Metodo para modificar el prestamo. Solo permite cambiar la fecha de devolucion.
+     */
     private void modificarPrestamo() {
         Scanner sc= new Scanner (System.in);   
         int pos;
@@ -449,7 +464,11 @@ public class Biblioteca2025 {
             System.out.println("Has añadido " + dias + " con exito");
         }   
     }
-
+    
+    
+    /**
+     * Metodo que nos da una lista de todos los prestamos, tanto los que estan activos como los que ya se devolvieron.
+     */
     private void listaPrestamos() {
         System.out.println("\nLista de prestamos activos:");
         for (Prestamo p: prestamos) {
@@ -467,7 +486,9 @@ public class Biblioteca2025 {
     }
     
     
-    
+    /**
+     * Metodo que nos da una lista detallada de los prestamos que un usuario tiene activo o que tuvo en su momento.
+     */
     private void listaPrestamosUsu() {
         String dni = solicitaDni();
         int pos=buscaDni(dni);
@@ -496,6 +517,31 @@ public class Biblioteca2025 {
         }
         }
         
+    }
+    
+        /**
+         * Metodo que nos da una lista detallada de los usuuarios que o bien estan leyendo este libro o ya lo han leido.
+         */
+        private void listaPrestamosLibro(){
+        String isbn=solicitaIsbn();
+        int pos=buscaIsbn(isbn);
+        if (pos==-1){
+             System.out.println("No tengo ningún libro con ese ISBN");
+        }else{
+            System.out.println("Usuarios/as que lo estan leyendo");
+            for (Prestamo p : prestamos) {
+                if (p.getLibroPrest().getIsbn().equals(isbn)){
+                    System.out.println(p.getUsuarioPrest());
+                }
+            }
+            
+            System.out.println("Usuarios/as que ya lo han leido");
+            for (Prestamo p : prestamosHist) {
+                if (p.getLibroPrest().getIsbn().equals(isbn)){
+                    System.out.println(p.getUsuarioPrest());
+                }
+            }
+        }
     }
     //</editor-fold>
     
@@ -602,10 +648,6 @@ public class Biblioteca2025 {
     }
     
     /**
-     * Metodo que busca el Prestamo usando el Dni y el Isbn
-     * @return Devuelve la posicion del Prestamo, devuelve -1 si no lo encontro
-     */
-    /**
      * Método para buscar un préstamo en la colección préstamos
      * @param dni (String) del usuario que realizó el préstamo
      * @param isbn (String) del libro prestado
@@ -622,6 +664,18 @@ public class Biblioteca2025 {
             }
         }
         return pos;       
+    }
+    
+    /**
+     * Metodo que nos imprime los prestamos que estan fuera de plazo.
+     */
+    public void fueraPlazo(){
+        System.out.println("Prestamos fuera de plazo:");
+        for (Prestamo p : prestamos) {
+            if (p.getFechaDev().isBefore(LocalDate.now())){
+                    System.out.println(p);
+            }
+        }
     }
     //</editor-fold>
 
