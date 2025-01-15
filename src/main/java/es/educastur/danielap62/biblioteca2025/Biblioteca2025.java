@@ -201,10 +201,12 @@ public class Biblioteca2025 {
                 
                 case 7: {
                     libroMasPrestado();
+                    break;
                 }
                 
                 case 8: {
                     usuMasLector();
+                    break;
                 }
             }
         }while(opcion != 9);
@@ -574,15 +576,15 @@ public class Biblioteca2025 {
             }
             
             int mayor = 0;
-            for (int i = 0; i < contadorLibros.size(); i++) {
+            for (int i = 1; i < contadorLibros.size(); i++) {
                 if(contadorLibros.get(i) > mayor){
                     mayor = contadorLibros.get(i);
                 }
                 
             }
-            System.out.println("Los Libros mas leidos son: ");
+            System.out.println("El Libro/s mas leido/s son: ");
             for (int i = 0; i < contadorLibros.size(); i++) {
-                if(contadorLibros.get(i) >= mayor){
+                if(contadorLibros.get(i) == mayor){
                     System.out.println("\t- " + libros.get(i).getTitulo());
                 }
                 
@@ -610,15 +612,15 @@ public class Biblioteca2025 {
             }
             
             int mayor = 0;
-            for (int i = 0; i < contadorUsu.size(); i++) {
+            for (int i = 1; i < contadorUsu.size(); i++) {
                 if(contadorUsu.get(i) > mayor){
                     mayor = contadorUsu.get(i);
                 }
                 
             }
-            System.out.println("Los Usuario mas lectores son: ");
+            System.out.println("El Usuario/s mas lector/es es(son): ");
             for (int i = 0; i < contadorUsu.size(); i++) {
-                if(contadorUsu.get(i) >= mayor){
+                if(contadorUsu.get(i) == mayor){
                     System.out.println("\t- " + usuarios.get(i).getNombre());
                 }
                 
