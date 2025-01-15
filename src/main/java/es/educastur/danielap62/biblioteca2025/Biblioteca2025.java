@@ -589,6 +589,9 @@ public class Biblioteca2025 {
             }
         }
         
+        /**
+         * Metodo que busca los usuarios que mas libros han cogido y da una lista con ellos.
+         */
         private void usuMasLector (){
             ArrayList <Integer> contadorUsu = new ArrayList();
             for (Usuario u : usuarios) {
