@@ -164,6 +164,8 @@ public class Biblioteca2025 {
             System.out.println("4 - LISTA DE PRESTAMOS");
             System.out.println("5 - LISTA PREST. USUARIO EN ESPECIFICO");
             System.out.println("6 - LISTA PREST. LIBRO EN ESPECIFICO");
+            System.out.println("7 - LIBRO MAS PRESTADO");
+            System.out.println("8 - USUARIO MAS LECTOR");
             System.out.println("9 - Salir");
             opcion = sc.nextInt();
              
@@ -195,6 +197,14 @@ public class Biblioteca2025 {
                 
                 case 6: {
                     listaPrestamosLibro();
+                }
+                
+                case 7: {
+                    libroMasPrestado();
+                }
+                
+                case 8: {
+                    usuMasLector();
                 }
             }
         }while(opcion != 9);
@@ -543,6 +553,74 @@ public class Biblioteca2025 {
             }
         }
     }
+        
+        
+    
+        private void libroMasPrestado (){
+            ArrayList <Integer> contadorLibros = new ArrayList();
+            for (Libro l : libros) {
+                int cont = 0;
+                for (Prestamo p : prestamos) {
+                    if (l == p.getLibroPrest())
+                        cont++;
+                }
+                
+                for (Prestamo p : prestamosHist) {
+                    if (l == p.getLibroPrest())
+                        cont++;
+                }
+                
+                contadorLibros.add(cont);
+            }
+            
+            int mayor = 0;
+            for (int i = 0; i < contadorLibros.size(); i++) {
+                if(contadorLibros.get(i) > mayor){
+                    mayor = contadorLibros.get(i);
+                }
+                
+            }
+            System.out.println("Los Libros mas leidos son: ");
+            for (int i = 0; i < contadorLibros.size(); i++) {
+                if(contadorLibros.get(i) >= mayor){
+                    System.out.println("\t- " + libros.get(i).getTitulo());
+                }
+                
+            }
+        }
+        
+        private void usuMasLector (){
+            ArrayList <Integer> contadorUsu = new ArrayList();
+            for (Usuario u : usuarios) {
+                int cont = 0;
+                for (Prestamo p : prestamos) {
+                    if (u == p.getUsuarioPrest())
+                        cont++;
+                }
+                
+                for (Prestamo p : prestamosHist) {
+                    if (u == p.getUsuarioPrest())
+                        cont++;
+                }
+                
+                contadorUsu.add(cont);
+            }
+            
+            int mayor = 0;
+            for (int i = 0; i < contadorUsu.size(); i++) {
+                if(contadorUsu.get(i) > mayor){
+                    mayor = contadorUsu.get(i);
+                }
+                
+            }
+            System.out.println("Los Usuario mas lectores son: ");
+            for (int i = 0; i < contadorUsu.size(); i++) {
+                if(contadorUsu.get(i) >= mayor){
+                    System.out.println("\t- " + usuarios.get(i).getNombre());
+                }
+                
+            }
+        }
     //</editor-fold>
     
     
