@@ -671,6 +671,38 @@ public class Biblioteca2025 {
         }
     }
     
+    /**
+     * Metodo para validacion de un Int
+     * @param s Recibe como string el numero a comprobar si puede convertirse en un int
+     * @return Devuelve true si es posible convertirlo y un false si da un erro
+     */
+    public boolean esInt (String s) {
+        int n;
+        try{
+            n=Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException ex){
+            return false;
+        }
+    }
+    
+    /**
+     * Metodo para validacion de un Double
+     * @param s Recibe como string el numero con decimales a comprobar si puede convertirse en un double
+     * @return Devuelve true si es posible convertirlo y un false si da un erro
+     */
+    public boolean esDouble (String s) {
+        double n;
+        try{
+            n=Double.parseDouble(s);
+            return true;
+        } catch (NumberFormatException ex){
+            return false;
+        }
+    }
+    
+    
+    
     
     /**
      * Metodo para buscar un DNI en un ArrayList, devuelve la posicion en este, si no le encuentra devuelve un -1
