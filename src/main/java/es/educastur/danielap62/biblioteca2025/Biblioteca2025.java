@@ -226,9 +226,14 @@ public class Biblioteca2025 {
             String autor = sc.nextLine();
             System.out.println("Genero: ");
             String genero = sc.nextLine();
-            System.out.println("¿Cuantos ejemplares tenemos?");
-            int ejemplares = sc.nextInt();
-            libros.add(new Libro(Isbn, titulo, autor, genero, ejemplares));
+            
+            String unidadesSt;
+            do{
+                System.out.println("¿Cuantos ejemplares tenemos?");
+                unidadesSt = sc.next();
+            }while(!MetodosAux.esInt(unidadesSt));
+                int unidades=Integer.parseInt(unidadesSt);
+                libros.add(new Libro(Isbn, titulo, autor, genero, unidades));
         }
 
         private void eliminarLibro() {
@@ -671,35 +676,6 @@ public class Biblioteca2025 {
         }
     }
     
-    /**
-     * Metodo para validacion de un Int
-     * @param s Recibe como string el numero a comprobar si puede convertirse en un int
-     * @return Devuelve true si es posible convertirlo y un false si da un erro
-     */
-    public boolean esInt (String s) {
-        int n;
-        try{
-            n=Integer.parseInt(s);
-            return true;
-        } catch (NumberFormatException ex){
-            return false;
-        }
-    }
-    
-    /**
-     * Metodo para validacion de un Double
-     * @param s Recibe como string el numero con decimales a comprobar si puede convertirse en un double
-     * @return Devuelve true si es posible convertirlo y un false si da un erro
-     */
-    public boolean esDouble (String s) {
-        double n;
-        try{
-            n=Double.parseDouble(s);
-            return true;
-        } catch (NumberFormatException ex){
-            return false;
-        }
-    }
     
     
     
