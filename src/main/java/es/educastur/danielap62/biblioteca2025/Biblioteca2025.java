@@ -314,7 +314,7 @@ public class Biblioteca2025 {
     //</editor-fold>
     
         
-    //<editor-fold defaultstate="collapsed" desc="Gestion Usuarios">
+    //<editor-fold defaultstate="collapsed" desc="Gestion Usuarios">  
     private void nuevoUsuario() {
         Scanner sc = new Scanner(System.in);             
             System.out.println("Creemos un nuevo Libro:");
@@ -421,21 +421,36 @@ public class Biblioteca2025 {
      */
     private void nuevoPrestamo() {
         System.out.println("Identificacion del usuario:");
-        int posUsuario=buscaDni(solicitaDni());
+        String dni = solicitaDni();
+        int posUsuario = buscaDni(dni);
+        
+        
+        
         if (posUsuario==-1){
             System.out.println("No es socio de la Biblioteca");
-            //En su momento aqui habria que poner que pregunte si quiere darse de alta como socio y en caso afirmativo llevarlo a nuevoUsuario().
         }else{
-            int posLibro=buscaIsbn(solicitaIsbn());
-            if(posLibro==-1){
-                System.out.println("El ISBN no pertenece a un libro existente en nuestro Catalogo. \n Lo sentimos");
-            }else if(libros.get(posLibro).getEjemplares()>0){
-                LocalDate hoy=LocalDate.now();
+            
+            String isbn=solicitaIsbn();
+            
+            try{
+              int posLibro=stockLibro(isbn);
+              LocalDate hoy=LocalDate.now();
                 prestamos.add(new Prestamo(libros.get(posLibro),usuarios.get(posUsuario),hoy,hoy.plusDays(15)));
                 libros.get(posLibro).setEjemplares(libros.get(posLibro).getEjemplares()-1);
-            }else{
-                System.out.println("No quedan unidades de este");
+            }catch (LibroNoExiste | LibroNoDisponible ex){
+                System.out.println(ex.getMessage());
             }
+            /* Version antes de las exceptions:
+            int posLibro=buscaIsbn(solicitaIsbn());
+            if(posLibro==-1){
+            System.out.println("El ISBN no pertenece a un libro existente en nuestro Catalogo. \n Lo sentimos");
+            }else if(libros.get(posLibro).getEjemplares()>0){
+            LocalDate hoy=LocalDate.now();
+            prestamos.add(new Prestamo(libros.get(posLibro),usuarios.get(posUsuario),hoy,hoy.plusDays(15)));
+            libros.get(posLibro).setEjemplares(libros.get(posLibro).getEjemplares()-1);
+            }else{
+            System.out.println("No quedan unidades de este");
+            }*/ 
         }
     }
 
@@ -677,7 +692,18 @@ public class Biblioteca2025 {
     }
     
     
-    
+            
+        public int stockLibro (String isbn) throws LibroNoExiste, LibroNoDisponible{
+            int pos=buscaIsbn(isbn);
+            if (pos==-1){
+                throw new LibroNoExiste ("No existe en esta biblioteca la referencia: " + isbn);
+            }else if (libros.get(pos).getEjemplares() == 0){
+                throw new LibroNoDisponible ("No hay unidades disponibles del libro con referencia: " + isbn);
+            }else return pos;
+            //Como es solo una instruccion hasta 1 ; (solo una instruccion) no es necesario que tenga corchetes ({}) 
+        }
+        
+      
     
     
     /**
