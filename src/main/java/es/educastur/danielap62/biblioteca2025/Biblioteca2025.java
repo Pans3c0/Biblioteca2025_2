@@ -72,7 +72,9 @@ public class Biblioteca2025 {
     }
 
 
-
+    private void forks() {
+        //Prueba de Forks
+    }
     private void menuLibros() {
       
         int opcion = 0;
